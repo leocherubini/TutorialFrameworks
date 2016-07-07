@@ -1,7 +1,8 @@
 package org.aula.framework;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FileSerializer {
@@ -14,8 +15,8 @@ public class FileSerializer {
 		this.df = df;
 	}
 
-	public void generateFile(String filename, PropertiesGetter propGetter) {
-		byte[] bytes = this.df.formatData(propGetter.getPropertiesList());
+	public void generateFile(String filename, Object obj) {
+		byte[] bytes = this.df.formatData(this.getPropertiesList(obj));
 		
 		try {
 			bytes = this.pp.postProcess(bytes);
@@ -25,5 +26,28 @@ public class FileSerializer {
 		} catch(Exception e) {
 			throw new RuntimeException("Problemas writing the file", e);
 		}
+	}
+	
+	private Map<String, Object> getPropertiesList(Object obj) {
+		Map<String, Object> props = new HashMap<String, Object>();
+		Class<?> clazz = obj.getClass();
+		for(Method m: clazz.getMethods()) {
+			if(m.getName().startsWith("get") &&
+					m.getParameterTypes().length == 0 &&
+					m.getReturnType() != void.class &&
+					!m.getName().equals("getClass")) {
+				try {
+					Object value = m.invoke(obj);
+					String getterNome = m.getName();
+					String propNome = getterNome.substring(3, 4).toLowerCase() +
+							getterNome.substring(4);
+					props.put(propNome, value);
+				} catch(Exception e) {
+					throw new RuntimeException("Cannot retrieve properties", e);
+				}
+			}
+		}
+		
+		return props;
 	}
 }
