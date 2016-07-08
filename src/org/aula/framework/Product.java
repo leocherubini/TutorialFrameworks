@@ -41,7 +41,8 @@ public class Product {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-
+	
+	@Prefix("NR#")
 	public String getCode() {
 		return code;
 	}
@@ -58,7 +59,5 @@ public class Product {
 	public void setSecretCode(String secretCode) {
 		this.secretCode = secretCode;
 	}
-	
-	
 	
 }
