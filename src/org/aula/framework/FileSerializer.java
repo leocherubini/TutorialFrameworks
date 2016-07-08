@@ -32,10 +32,7 @@ public class FileSerializer {
 		Map<String, Object> props = new HashMap<String, Object>();
 		Class<?> clazz = obj.getClass();
 		for(Method m: clazz.getMethods()) {
-			if(m.getName().startsWith("get") &&
-					m.getParameterTypes().length == 0 &&
-					m.getReturnType() != void.class &&
-					!m.getName().equals("getClass")) {
+			if(isAllowedGetter(m)) {
 				try {
 					Object value = m.invoke(obj);
 					String getterNome = m.getName();
@@ -49,5 +46,13 @@ public class FileSerializer {
 		}
 		
 		return props;
+	}
+
+	private boolean isAllowedGetter(Method m) {
+		return m.getName().startsWith("get") &&
+				m.getParameterTypes().length == 0 &&
+				m.getReturnType() != void.class &&
+				!m.getName().equals("getClass") &&
+				!m.isAnnotationPresent(DontIncludeOnFile.class);
 	}
 }
