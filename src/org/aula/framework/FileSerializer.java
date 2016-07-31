@@ -1,6 +1,7 @@
 package org.aula.framework;
 
 import java.io.FileOutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +39,7 @@ public class FileSerializer {
 					String getterNome = m.getName();
 					String propNome = getterNome.substring(3, 4).toLowerCase() +
 							getterNome.substring(4);
-					if(m.isAnnotationPresent(Prefix.class)) {
-						Prefix prefix = m.getAnnotation(Prefix.class);
-						value = prefix.value() + value;
-					}
+					value = formatValue(m, value);
 					props.put(propNome, value);
 				} catch(Exception e) {
 					throw new RuntimeException("Cannot retrieve properties", e);
@@ -50,6 +48,20 @@ public class FileSerializer {
 		}
 		
 		return props;
+	}
+
+	private Object formatValue(Method m, Object value) throws InstantiationException, IllegalAccessException {
+		for(Annotation an : m.getAnnotations()) {
+			Class<?> anType = an.annotationType();
+			if(anType.isAnnotationPresent(FormatterImplementation.class)) {
+				FormatterImplementation fi = anType.getAnnotation(FormatterImplementation.class);
+				Class<? extends ValueFormatter> c = fi.value();
+				ValueFormatter vf = c.newInstance();
+				vf.readAnnotation(an);
+				value = vf.formatValue(value);
+			}
+		}
+		return value;
 	}
 
 	private boolean isAllowedGetter(Method m) {
