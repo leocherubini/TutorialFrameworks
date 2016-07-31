@@ -1,7 +1,6 @@
 package org.aula.framework;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.aula.application.Uppercase;
 
 public class Product {
 
@@ -18,6 +17,7 @@ public class Product {
 		this.code = code;
 	}
 
+	@Uppercase
 	public String getName() {
 		return name;
 	}
@@ -34,6 +34,7 @@ public class Product {
 		this.brand = brand;
 	}
 
+	@Prefix("R$")
 	public double getPrice() {
 		return price;
 	}
