@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileSerializer {
+public class FileSerializer implements Serializer {
 
 	private PostProcessor pp;
 	private DataFormatter df;
@@ -16,6 +16,10 @@ public class FileSerializer {
 		this.df = df;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.aula.framework.Serializer#generateFile(java.lang.String, java.lang.Object)
+	 */
+	@Override
 	public void generateFile(String filename, Object obj) {
 		byte[] bytes = this.df.formatData(this.getPropertiesList(obj));
 		
