@@ -16,4 +16,12 @@ public class SerializerLogger implements Serializer {
 
 	}
 
+	public void setPostProcessor(PostProcessor pp) {
+		
+	}
+
+	public PostProcessor getPostProcessor() {
+		return null;
+	}
+
 }

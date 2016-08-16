@@ -15,6 +15,16 @@ public class FileSerializer implements Serializer {
 		this.pp = pp;
 		this.df = df;
 	}
+	
+	@Override
+	public PostProcessor getPostProcessor() {
+		return pp;
+	}
+
+	@Override
+	public void setPostProcessor(PostProcessor pp) {
+		this.pp = pp;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.aula.framework.Serializer#generateFile(java.lang.String, java.lang.Object)
